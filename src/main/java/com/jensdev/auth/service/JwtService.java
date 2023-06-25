@@ -108,13 +108,13 @@ public class JwtService {
 
     public String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
-        System.out.println(authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
         }
         return authHeader.substring("Bearer ".length());
     }
 
+    // get the token from the request or from the cookies
     public String getAccessToken(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         if (token == null) {
@@ -123,6 +123,7 @@ public class JwtService {
         return token;
     }
 
+    // get the token from the request or from the cookies
     public String getRefreshToken(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         if (token == null) {

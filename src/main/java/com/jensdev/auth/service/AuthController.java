@@ -24,6 +24,8 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    // auth controller provide tokens both as HttpOnly cookies and as JSON response
+    // to support different implementations of toke authentication
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
