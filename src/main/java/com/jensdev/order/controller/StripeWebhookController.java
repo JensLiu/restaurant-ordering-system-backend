@@ -38,8 +38,8 @@ public class StripeWebhookController {
             @RequestBody String payload) throws StripeException {
 
         log.info("Stripe event received");
-        log.debug("endpointSecret: " + endpointSecret);
-        log.debug("sig header: " + sigHeader);
+        log.info("endpointSecret: " + endpointSecret);
+        log.info("sig header: " + sigHeader);
 
         if (sigHeader == null) {
             log.info("Stripe event received but no signature header was found");
