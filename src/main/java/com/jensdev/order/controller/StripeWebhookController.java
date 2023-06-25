@@ -37,23 +37,26 @@ public class StripeWebhookController {
             @RequestHeader("Stripe-Signature") String sigHeader,
             @RequestBody String payload) throws StripeException {
 
+        log.info("Stripe event received");
+
         if (sigHeader == null) {
+            log.info("Stripe event received but no signature header was found");
             return ResponseEntity.ok(null);
         }
 
         Event event;
+
         try {
             event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-//        } catch (JsonSyntaxException e) {
-            // Invalid payload
-//            return ResponseEntity.ok(null);
         } catch (SignatureVerificationException e) {
             // Invalid signature
             return ResponseEntity.ok(null);
         }
 
         // Handle the checkout.session.completed event
+        log.info("Stripe event type: " + event.getType());
         if ("checkout.session.completed".equals(event.getType())) {
+
             Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
 
             SessionRetrieveParams params =

@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (jwtToken == null) {
             log.info("Cannot get access token, not authenticated");
             filterChain.doFilter(request, response);
+            log.info("Filter chain done");
             return;
         }
 
