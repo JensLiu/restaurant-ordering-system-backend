@@ -38,10 +38,12 @@ public class StripeWebhookController {
             @RequestBody String payload) throws StripeException {
 
         log.info("Stripe event received");
+        log.debug("endpointSecret: " + endpointSecret);
+        log.debug("sig header: " + sigHeader);
 
         if (sigHeader == null) {
             log.info("Stripe event received but no signature header was found");
-            return ResponseEntity.ok(null);
+            return ResponseEntity.badRequest().build();
         }
 
         Event event;
@@ -51,7 +53,7 @@ public class StripeWebhookController {
         } catch (SignatureVerificationException e) {
             // Invalid signature
             log.info("Stripe event received but signature verification failed");
-            return ResponseEntity.ok(null);
+            return ResponseEntity.badRequest().build();
         }
 
         // Handle the checkout.session.completed event
