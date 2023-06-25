@@ -30,9 +30,6 @@ import java.util.List;
 @Log4j2
 public class OrderServiceImpl implements OrderService {
 
-    @Value("${app.stripe.api}")
-    private String stripeApi;
-
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
     private final MenuItemSizeRepository sizeRepository;
@@ -141,7 +138,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Session createStripeSession(Double totalPrice, String successUrl, String cancelUrl) throws StripeException {
-        Stripe.apiKey = stripeApi;
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(

@@ -58,6 +58,7 @@ public class StripeWebhookController {
 
         // Handle the checkout.session.completed event
         log.info("Stripe event type: " + event.getType());
+
         if ("checkout.session.completed".equals(event.getType())) {
 
             Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
