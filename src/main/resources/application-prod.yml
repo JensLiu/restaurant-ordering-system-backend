@@ -1,0 +1,33 @@
+# database
+spring:
+  datasource:
+    username: ${PROD_DB_USER}
+    password: ${PROD_DB_PASSWORD}
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true # for postgresql
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+app:
+  jwt:
+    secret: ${PROD_JWT_SECRET}
+    access-token:
+      cookie-name: ${PROD_JWT_ACCESS_TOKEN_COOKIE_NAME}
+      expiration-ms: ${PROD_JWT_ACCESS_TOKEN_EXPIRATION_MS}
+    refresh-token:
+        cookie-name: ${PROD_JWT_REFRESH_TOKEN_COOKIE_NAME}
+        expiration-ms: ${PROD_JWT_REFRESH_TOKEN_EXPIRATION_MS}
+  stripe:
+    api: ${PROD_STRIPE_API}
+    webhook:
+        secret: ${PROD_STRIPE_WEBHOOK_SECRET}
