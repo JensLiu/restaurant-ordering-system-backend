@@ -1,6 +1,7 @@
 package com.jensdev.auth.filter;
 
 import com.jensdev.auth.service.JwtService;
+import com.jensdev.common.exceptions.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,10 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Requesting " + request.getMethod() + " " + request.getRequestURI());
         final String jwtToken = jwtService.getAccessToken(request);
         if (jwtToken == null) {
-            log.info("Cannot get access token, not authenticated");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.info("Cannot get access token, not authenticated, continue");
             filterChain.doFilter(request, response);
-            log.info("Filter chain done");
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.jensdev.auth.service;
 
+import com.jensdev.common.exceptions.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Log4j2
 public class JwtService {
 
     @Value("${app.jwt.secret}")
@@ -127,7 +130,11 @@ public class JwtService {
     public String getRefreshToken(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         if (token == null) {
-            return getTokenFromCookies(request, refreshTokenCookieName);
+            token = getTokenFromCookies(request, refreshTokenCookieName);
+            if (token == null) {
+                log.info("Refresh token is missing");
+                throw new AuthException("Refresh token is missing");
+            }
         }
         return token;
     }

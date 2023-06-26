@@ -1,5 +1,6 @@
 package com.jensdev.config;
 
+import com.jensdev.auth.CustomAuthenticationEntryPoint;
 import com.jensdev.auth.filter.CorsFilter;
 import com.jensdev.auth.filter.JwtAuthenticationFilter;
 import com.jensdev.user.modal.Role;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final CorsFilter corsFilter;
     public final UserDetailsService userDetailsService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -45,7 +47,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(Customizer -> Customizer.authenticationEntryPoint(customAuthenticationEntryPoint));
 
         return httpSecurity.build();
     }

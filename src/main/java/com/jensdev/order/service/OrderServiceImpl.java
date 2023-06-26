@@ -1,5 +1,6 @@
 package com.jensdev.order.service;
 
+import com.jensdev.common.exceptions.BusinessException;
 import com.jensdev.menu.repository.MenuItemFlavourRepository;
 import com.jensdev.menu.repository.MenuItemRepository;
 import com.jensdev.menu.repository.MenuItemSizeRepository;
@@ -7,7 +8,6 @@ import com.jensdev.order.dto.OrderItemRequestDto;
 import com.jensdev.order.repository.OrderItemRepository;
 import com.jensdev.order.repository.OrderRepository;
 import com.jensdev.user.modal.User;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
@@ -19,7 +19,6 @@ import com.jensdev.order.modal.OrderStatus;
 import com.jensdev.order.dto.OrderRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -69,13 +68,11 @@ public class OrderServiceImpl implements OrderService {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
-
-
     }
 
     @Override
     public Session handleContinuedCheckoutInitiation(Long orderId, String successUrl, String cancelUrl) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         try {
             Session stripeSession = createStripeSession(order.getTotalPrice(), successUrl, cancelUrl);
             order.setStripeSessionId(stripeSession.getId());
@@ -116,12 +113,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElseThrow();
+        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
     @Override
     public Order updateOrderStatus(Long id, OrderStatus newStatus) {
-        Order order = orderRepository.findById(id).orElseThrow();
+        Order order = orderRepository.findById(id).orElseThrow(() -> new BusinessException("Cannot update status of non-existing order"));
         order.setStatus(newStatus);
         return orderRepository.save(order);
     }

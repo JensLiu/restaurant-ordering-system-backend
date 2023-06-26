@@ -1,5 +1,6 @@
 package com.jensdev.menu.service;
 
+import com.jensdev.common.exceptions.BusinessException;
 import com.jensdev.menu.modal.MenuItem;
 import com.jensdev.menu.modal.MenuItemCategory;
 import com.jensdev.menu.modal.MenuItemFlavour;
@@ -21,6 +22,7 @@ public class MenuServiceImpl implements MenuService {
     public final MenuCategoryRepository menuCategoryRepository;
     public final MenuItemSizeRepository menuItemSizeRepository;
     public final MenuItemFlavourRepository menuItemFlavourRepository;
+
     @Override
     public MenuItem addMenuItem(MenuItem menuItem) {
         return menuRepository.save(menuItem);
@@ -38,7 +40,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuItem updateMenuItem(MenuItem menuItem) {
-        MenuItem old = menuRepository.findById(menuItem.getId()).orElseThrow();
+        MenuItem old = menuRepository.findById(menuItem.getId()).orElseThrow(() -> new BusinessException("Cannot update non-existent item"));
 
         List<Long> flavourIds = old.getFlavours().stream().map(MenuItemFlavour::getId).toList();
         List<Long> sizeIds = old.getSizes().stream().map(MenuItemSize::getId).toList();
@@ -50,21 +52,21 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public void deleteItem(Long id) {
-        MenuItem item = menuRepository.findById(id).orElseThrow();
+        MenuItem item = menuRepository.findById(id).orElseThrow(() -> new BusinessException("Cannot delete non-existent item"));
         item.setIsDeleted(true);
         menuRepository.save(item);
     }
 
     @Override
     public void setIsSoldOut(Long id, Boolean isSoldOut) {
-        MenuItem item = menuRepository.findById(id).orElseThrow();
+        MenuItem item = menuRepository.findById(id).orElseThrow(() -> new BusinessException("Cannot set sold out on non-existent item"));
         item.setIsSoldOut(isSoldOut);
         menuRepository.save(item);
     }
 
     @Override
     public MenuItem getMenuItem(Long id) {
-        return menuRepository.findById(id).orElseThrow();
+        return menuRepository.findById(id).orElseThrow(() -> new BusinessException("Cannot find item"));
     }
 
     @Override

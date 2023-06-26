@@ -1,5 +1,7 @@
 package com.jensdev.user.service;
 
+import com.jensdev.common.exceptions.AuthException;
+import com.jensdev.common.exceptions.BusinessException;
 import com.jensdev.user.modal.User;
 import com.jensdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String userEmail) {
-        return userRepository.findByEmail(userEmail).orElseThrow();
+        return userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new BusinessException("User with email " + userEmail + " does not exist")
+        );
     }
 
     @Override
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (userDetails == null) {
-            throw new RuntimeException("User not found");
+            throw new AuthException("Unauthorized user");
         }
         String userEmail = userDetails.getUsername();
         return findUserByEmail(userEmail);

@@ -1,6 +1,9 @@
-package com.jensdev.auth.service;
+package com.jensdev.auth.controller;
 
 import com.jensdev.auth.model.*;
+import com.jensdev.auth.service.AuthService;
+import com.jensdev.auth.service.JwtService;
+import com.jensdev.common.exceptions.AuthException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +62,7 @@ public class AuthController {
                     .body(response);
         } catch (ExpiredJwtException e) {
             log.error(e.getMessage());
-            return ResponseEntity.badRequest().build();
+            throw new AuthException("Refresh token expired");
         }
     }
 

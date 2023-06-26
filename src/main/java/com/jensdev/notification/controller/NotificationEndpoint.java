@@ -1,6 +1,7 @@
 package com.jensdev.notification.controller;
 
 import com.jensdev.auth.service.JwtService;
+import com.jensdev.common.exceptions.AuthException;
 import com.jensdev.notification.dto.BaseNotificationDto;
 import com.jensdev.notification.dto.OrderNotificationDto;
 import com.jensdev.notification.service.NotificationService;
@@ -53,7 +54,7 @@ public class NotificationEndpoint {
     @OnClose
     public void onClose(@PathParam("token") String token, Session session) {
         User user = extractUser(token);
-        log.info("User " + user.getEmail() + " disconnected from websocket");
+        log.info("User " + user.getEmail( )+ " disconnected from websocket");
         NotificationService.removeConnection(user);
     }
 
@@ -75,8 +76,7 @@ public class NotificationEndpoint {
             String userEmail = jwtService.extractUsername(token);
             return userService.findUserByEmail(userEmail);
         } catch (ExpiredJwtException e) {
-            log.error("Token expired");
-            return null;    // TODO: Throw error
+            throw new AuthException("Token expired");
         }
     }
 }
