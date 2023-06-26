@@ -5,6 +5,8 @@ import com.jensdev.menu.dto.MenuItemCategoryDto;
 import com.jensdev.menu.dto.MenuItemDto;
 import com.jensdev.menu.modal.MenuItem;
 import com.jensdev.menu.modal.MenuItemCategory;
+import com.jensdev.user.modal.Role;
+import com.jensdev.user.modal.User;
 import com.jensdev.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -102,4 +104,40 @@ public class MenuItemController {
         List<MenuItemCategoryDto> dtos = categories.stream().map(MenuItemCategoryDto::fromDomain).toList();
         return ResponseEntity.ok(dtos);
     }
+
+    @DeleteMapping("/menu/categories/{id}")
+    ResponseEntity<Boolean> deleteCategory(@PathVariable Long id, Authentication authentication) {
+        User user = userService.getUser(authentication);
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.badRequest().build();
+        }
+        menuService.deleteCategory(id);
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/menu/categories/{id}")
+    ResponseEntity<MenuItemCategoryDto> updateCategory(@PathVariable Long id, @RequestBody MenuItemCategoryDto categoryDto, Authentication authentication) {
+        User user = userService.getUser(authentication);
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.badRequest().build();
+        }
+        MenuItemCategory category = categoryDto.toDomain();
+        category.setId(id);
+        MenuItemCategory updatedCategory = menuService.updateCategory(category);
+        return ResponseEntity.ok(MenuItemCategoryDto.fromDomain(updatedCategory));
+    }
+
+    @PostMapping("/menu/categories")
+    ResponseEntity<MenuItemCategoryDto> createCategory(@RequestBody MenuItemCategoryDto categoryDto, Authentication authentication) {
+        User user = userService.getUser(authentication);
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.badRequest().build();
+        }
+        MenuItemCategory category = categoryDto.toDomain();
+        category.setId(null);
+        MenuItemCategory createdCategory = menuService.addCategory(category);
+        return ResponseEntity.ok(MenuItemCategoryDto.fromDomain(createdCategory));
+    }
+
+
 }

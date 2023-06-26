@@ -66,4 +66,20 @@ public class MenuServiceImpl implements MenuService {
     public MenuItem getMenuItem(Long id) {
         return menuRepository.findById(id).orElseThrow();
     }
+
+    @Override
+    public MenuItemCategory updateCategory(MenuItemCategory category) {
+        return menuCategoryRepository.save(category);
+    }
+
+    @Override
+    public MenuItemCategory addCategory(MenuItemCategory category) {
+        category.setId(null);
+        return menuCategoryRepository.save(category);
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        menuCategoryRepository.deleteById(id);
+    }
 }

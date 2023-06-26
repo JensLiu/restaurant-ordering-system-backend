@@ -8,6 +8,7 @@ import com.jensdev.order.modal.Order;
 import com.jensdev.order.service.OrderService;
 import com.jensdev.user.modal.User;
 import com.jensdev.user.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.annotation.Resource;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
@@ -70,7 +71,12 @@ public class NotificationEndpoint {
     }
 
     private User extractUser(String token) {
-        String userEmail = jwtService.extractUsername(token);
-        return userService.findUserByEmail(userEmail);
+        try {
+            String userEmail = jwtService.extractUsername(token);
+            return userService.findUserByEmail(userEmail);
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired");
+            return null;    // TODO: Throw error
+        }
     }
 }

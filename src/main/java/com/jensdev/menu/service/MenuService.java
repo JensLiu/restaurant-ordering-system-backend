@@ -19,4 +19,10 @@ public interface MenuService {
     void setIsSoldOut(Long id, Boolean isSoldOut);
 
     MenuItem getMenuItem(Long id);
+
+    MenuItemCategory updateCategory(MenuItemCategory category);
+
+    MenuItemCategory addCategory(MenuItemCategory category);
+
+    void deleteCategory(Long id);
 }

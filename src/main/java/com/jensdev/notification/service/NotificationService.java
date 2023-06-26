@@ -27,17 +27,17 @@ public class NotificationService {
     }
 
     public static <T extends BaseNotificationDto> void notifyAllChefs(T notification) {
-        log.info("Sending notification to all chefs: " + notification);
+        log.info("Sending notification to all chefs: " + notification.toString());
         UserConnectionContext.chefConnections.forEach((user, session) -> {
             if (session.isOpen()) {
-                log.info("message: " + notification.toJson());
+                log.info("message to " + user.getEmail() + ": " + notification.toJson());
                 session.getAsyncRemote().sendText(notification.toJson());
             }
         });
     }
 
     public static <T extends BaseNotificationDto> void notifyUser(User user, T notification) {
-        log.info("notifying user" + user.getEmail() + ", " + notification);
+        log.info("notifying user " + user.getEmail() + ", " + notification.toString());
         Session session = null;
         switch (user.getRole()) {
             case CUSTOMER -> session = UserConnectionContext.customerConnections.get(user);
@@ -45,7 +45,7 @@ public class NotificationService {
             case ADMIN -> session = UserConnectionContext.managerConnections.get(user);
         }
         if (session != null && session.isOpen()) {
-            log.info("message: " + notification.toJson());
+            log.info("message to " + user.getEmail() + ": " + notification.toJson());
             session.getAsyncRemote().sendText(notification.toJson());
         }
     }
