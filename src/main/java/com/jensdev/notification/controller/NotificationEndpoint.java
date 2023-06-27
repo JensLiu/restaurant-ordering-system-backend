@@ -65,10 +65,9 @@ public class NotificationEndpoint {
         log.info("recieved message " + notification);
         Order order = orderService.updateOrderStatus(notification.getOrderId(), notification.getOrderStatus());
         log.info("to notify: " + order.getUser());
-        NotificationService.notifyUser(
-                order.getUser(),
-                OrderNotificationDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build()
-        );
+        var dto = OrderNotificationDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
+        NotificationService.notifyUser(order.getUser(), dto);
+
     }
 
     private User extractUser(String token) {
@@ -76,7 +75,10 @@ public class NotificationEndpoint {
             String userEmail = jwtService.extractUsername(token);
             return userService.findUserByEmail(userEmail);
         } catch (ExpiredJwtException e) {
-            throw new AuthException("Token expired");
+            String subject = e.getClaims().getSubject();
+            System.out.println("claim subject " + subject);
+            return userService.findUserByEmail(subject);
+//            throw new AuthException("Token expired");
         }
     }
 }

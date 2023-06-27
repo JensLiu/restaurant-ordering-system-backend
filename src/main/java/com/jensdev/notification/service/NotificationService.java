@@ -6,6 +6,8 @@ import jakarta.websocket.Session;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Log4j2
 public class NotificationService {
@@ -36,6 +38,16 @@ public class NotificationService {
         });
     }
 
+        public static <T extends BaseNotificationDto> void notifyAllChefsBut(T notification, List<User> excludedUser) {
+        log.info("Sending notification to all chefs : " + notification.toString());
+        UserConnectionContext.chefConnections.forEach((user, session) -> {
+            if (session.isOpen() && !excludedUser.contains(user)) {
+                log.info("message to " + user.getEmail() + ": " + notification.toJson());
+                session.getAsyncRemote().sendText(notification.toJson());
+            }
+        });
+    }
+
     public static <T extends BaseNotificationDto> void notifyUser(User user, T notification) {
         log.info("notifying user " + user.getEmail() + ", " + notification.toString());
         Session session = null;
@@ -49,6 +61,5 @@ public class NotificationService {
             session.getAsyncRemote().sendText(notification.toJson());
         }
     }
-
 
 }

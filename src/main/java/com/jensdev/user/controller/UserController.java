@@ -32,14 +32,17 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
         User user = userService.getUser(authentication);
         log.debug(user.getEmail() + " updated his/her/their information");
-        if (userDto.getFirstname() != null) {
+        if (userDto.getFirstname() != null && !userDto.getFirstname().isBlank()) {
             user.setFirstname(userDto.getFirstname());
         }
-        if (userDto.getLastname() != null) {
+        if (userDto.getLastname() != null && !userDto.getLastname().isBlank()) {
             user.setLastname(userDto.getLastname());
         }
-        if (userDto.getPassword() != null) {
+        if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
             user.setHashedPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+        if (userDto.getImageSrc() != null && !userDto.getImageSrc().isBlank()) {
+            user.setImageSrc(userDto.getImageSrc());
         }
         userService.updateUser(user);
         return ResponseEntity.ok().body(new UserDto(user));

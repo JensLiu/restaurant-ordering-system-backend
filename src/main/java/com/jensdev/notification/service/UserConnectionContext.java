@@ -19,4 +19,5 @@ public class UserConnectionContext {
     // online managers
     public static final Map<User, Session> managerConnections
             = Collections.synchronizedMap(new HashMap<>());
+
 }
