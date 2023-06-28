@@ -1,9 +1,9 @@
 package com.jensdev.notification.controller;
 
 import com.jensdev.auth.service.JwtService;
-import com.jensdev.common.exceptions.AuthException;
-import com.jensdev.notification.dto.BaseNotificationDto;
-import com.jensdev.notification.dto.OrderNotificationDto;
+import com.jensdev.notification.dto.BaseMessageDto;
+import com.jensdev.notification.dto.NotificationType;
+import com.jensdev.notification.dto.OrderMessageDto;
 import com.jensdev.notification.service.NotificationService;
 import com.jensdev.order.modal.Order;
 import com.jensdev.order.service.OrderService;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class NotificationEndpoint {
     // everytime a new connection is made, a new instance of this class is created
-
     // these services cannot be injected using constructor because it needs no args constructor to be created
     private static JwtService jwtService;
     private static UserService userService;
@@ -45,44 +44,67 @@ public class NotificationEndpoint {
 
     @OnOpen
     public void onOpen(@PathParam("token") String token, Session session) {
-        User user = extractUser(token);
-        log.info("User " + user.getEmail() + " connected to websocket");
-        log.info("Session id: " + session.getId());
-        NotificationService.addConnection(user, session);
+        User user = verifyUser(token);
+        if (user == null) {
+            log.info("authentication failed");
+            try {
+                session.close();
+            } catch (Exception e) {
+                log.error("Error closing session: " + e.getMessage());
+            }
+        } else {
+            log.info("User " + user.getEmail() + " connected to websocket");
+            log.info("Session id: " + session.getId());
+            NotificationService.addConnection(user, session);
+        }
     }
 
     @OnClose
     public void onClose(@PathParam("token") String token, Session session) {
-        User user = extractUser(token);
-        log.info("User " + user.getEmail( )+ " disconnected from websocket");
+        User user = getUserFromToken(token);
+        log.info("User " + user.getEmail() + " disconnected from websocket");
         NotificationService.removeConnection(user);
     }
 
     @OnMessage
     public void onMessage(String text) {
-        // TODO: support for chat message and refactor
+
+        BaseMessageDto notification = null;
         try {
-            OrderNotificationDto notification = (OrderNotificationDto) BaseNotificationDto.fromJson(text);
-            log.info("recieved message " + notification);
-            Order order = orderService.updateOrderStatus(notification.getOrderId(), notification.getOrderStatus());
-            log.info("to notify: " + order.getUser());
-            var dto = OrderNotificationDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
-            NotificationService.notifyUser(order.getUser(), dto);
+            notification = BaseMessageDto.fromJson(text);
         } catch (Exception e) {
             log.error("Error parsing message: " + e.getMessage());
+            return;
         }
 
+        assert notification != null;
+
+        if (notification.getType() == NotificationType.ORDER) {
+            OrderMessageDto orderNotificationDto = (OrderMessageDto) notification;
+            log.info("recieved message " + notification);
+            Order order = orderService.updateOrderStatus(orderNotificationDto.getOrderId(), orderNotificationDto.getOrderStatus());
+            log.info("to notify: " + order.getUser());
+            var dto = OrderMessageDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
+            NotificationService.notifyUser(order.getUser(), dto);
+        }
     }
 
-    private User extractUser(String token) {
+    private User getUserFromToken(String token) {
         try {
             String userEmail = jwtService.extractUsername(token);
             return userService.findUserByEmail(userEmail);
         } catch (ExpiredJwtException e) {
             String subject = e.getClaims().getSubject();
-            System.out.println("claim subject " + subject);
             return userService.findUserByEmail(subject);
-//            throw new AuthException("Token expired");
+        }
+    }
+
+    public User verifyUser(String token) {
+        try {
+            String userEmail = jwtService.extractUsername(token);
+            return userService.findUserByEmail(userEmail);
+        } catch (ExpiredJwtException e) {
+            return null;
         }
     }
 }

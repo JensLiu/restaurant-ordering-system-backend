@@ -1,6 +1,7 @@
 package com.jensdev.order.service;
 
-import com.jensdev.common.exceptions.BusinessException;
+import com.jensdev.common.exceptionHandlers.BusinessException;
+import com.jensdev.common.infrastructureException.InfrastructureException;
 import com.jensdev.menu.repository.MenuItemFlavourRepository;
 import com.jensdev.menu.repository.MenuItemRepository;
 import com.jensdev.menu.repository.MenuItemSizeRepository;
@@ -19,6 +20,7 @@ import com.jensdev.order.modal.OrderStatus;
 import com.jensdev.order.dto.OrderRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -41,7 +43,17 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItemRequestDto> orderItems = requestDto.getOrderItems();
         List<OrderItem> items = orderItems.stream().map(this::convertToDomain).toList();
 
-        List<OrderItem> savedItems = orderItemRepository.saveAll(items);
+        List<OrderItem> savedItems = null;
+
+        try {
+            savedItems = orderItemRepository.saveAll(items);
+        } catch (DataIntegrityViolationException e) {
+            log.info("Invalid order items");
+            throw new BusinessException("Invalid order items");
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new InfrastructureException("Something went wrong");
+        }
 
         Double total = savedItems.stream()
                 .mapToDouble(item -> item.getSize().getUnitPrice() * item.getQuantity())
@@ -87,12 +99,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order handleSuccessfulPayment(String stripeIntent, String stripeSessionId) {
         log.info("handle Payment intent: " + stripeIntent);
-        Order order = orderRepository.findAllByStripeSessionId(stripeSessionId).get(0);
+        Order order = null;
+        try {
+            order = orderRepository.findAllByStripeSessionId(stripeSessionId).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            throw new BusinessException("Cannot find order with stripe session id: " + stripeSessionId);
+        }
         log.info("Order: " + order);
         order.setStripeIntentId(stripeIntent);
         order.setPaidAt(new Date());
         order.setStatus(OrderStatus.WAITING);
-        // TODO: send notification
         return orderRepository.save(order);
     }
 
@@ -156,19 +172,4 @@ public class OrderServiceImpl implements OrderService {
         return Session.create(params);
     }
 
-    private String createStripeCustomSession(Double totalPrice) throws StripeException {
-        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(totalPrice.longValue() * 100)
-                .setCurrency("usd")
-                .setAutomaticPaymentMethods(
-                        PaymentIntentCreateParams.AutomaticPaymentMethods
-                                .builder()
-                                .setEnabled(true)
-                                .build()
-                )
-                .build();
-        // Create a PaymentIntent with the order amount and currency
-        PaymentIntent paymentIntent = PaymentIntent.create(params);
-        return paymentIntent.getClientSecret();
-    }
 }

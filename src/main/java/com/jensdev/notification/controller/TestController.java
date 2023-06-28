@@ -1,7 +1,7 @@
 package com.jensdev.notification.controller;
 
-import com.jensdev.notification.dto.MessageNotificationDto;
-import com.jensdev.notification.dto.OrderNotificationDto;
+import com.jensdev.notification.dto.MessageMessageDto;
+import com.jensdev.notification.dto.OrderMessageDto;
 import com.jensdev.notification.service.NotificationService;
 import com.jensdev.order.modal.OrderStatus;
 import com.jensdev.user.modal.User;
@@ -22,7 +22,7 @@ public class TestController {
     @GetMapping("/mock-orders")
     public void mockOrders() {
         System.out.println("Test begin");
-        NotificationService.notifyAllChefs(OrderNotificationDto.builder().orderId(-1L).orderStatus(OrderStatus.WAITING).build());
+        NotificationService.notifyAllChefs(OrderMessageDto.builder().orderId(-1L).orderStatus(OrderStatus.WAITING).build());
         System.out.println("Test end");
     }
 
@@ -30,7 +30,7 @@ public class TestController {
     public void mockMessages(@PathVariable String email) {
         System.out.println("Test begin");
         User user = userService.findUserByEmail(email);
-        NotificationService.notifyUser(user, MessageNotificationDto.builder().build());
+        NotificationService.notifyUser(user, MessageMessageDto.builder().build());
         System.out.println("Test end");
     }
 

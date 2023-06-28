@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Builder
-public class MessageNotificationDto implements BaseNotificationDto {
+public class MessageMessageDto implements BaseMessageDto {
     @Override
     public NotificationType getType() {
         return NotificationType.MESSAGE;

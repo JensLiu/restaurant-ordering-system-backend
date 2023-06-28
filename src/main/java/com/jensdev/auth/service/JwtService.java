@@ -1,6 +1,6 @@
 package com.jensdev.auth.service;
 
-import com.jensdev.common.exceptions.AuthException;
+import com.jensdev.common.authException.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,9 +9,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.HandshakeRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -114,6 +116,17 @@ public class JwtService {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
         }
+        return authHeader.substring("Bearer ".length());
+    }
+
+    public String getTokenFromRequest(ServerHttpRequest request) {
+
+        final String authHeader = request.getHeaders().getFirst("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
         return authHeader.substring("Bearer ".length());
     }
 

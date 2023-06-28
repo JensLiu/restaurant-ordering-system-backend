@@ -1,6 +1,6 @@
 package com.jensdev.menu.service;
 
-import com.jensdev.common.exceptions.BusinessException;
+import com.jensdev.common.exceptionHandlers.BusinessException;
 import com.jensdev.menu.modal.MenuItem;
 import com.jensdev.menu.modal.MenuItemCategory;
 import com.jensdev.menu.modal.MenuItemFlavour;

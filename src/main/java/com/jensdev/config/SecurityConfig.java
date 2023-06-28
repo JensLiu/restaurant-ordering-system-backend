@@ -39,10 +39,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/**").permitAll()    // permit auth requests
                                 .requestMatchers("/stripe/**").permitAll()  // permit stripe webhooks
-                                .requestMatchers("/ws/**").permitAll()      // permit web socket connections
                                 .requestMatchers("/api/v1/public/**").permitAll() // permit public api requests
+                                .requestMatchers("/ws/**").permitAll()   // permit websocket requests
 //                                .requestMatchers("/api/v1/**").permitAll()
-                        .requestMatchers("/api/v1/**").hasAnyAuthority(Role.ADMIN.name(), Role.CHEF.name(), Role.CUSTOMER.name())
+                                .requestMatchers("/api/v1/**").hasAnyAuthority(Role.ADMIN.name(), Role.CHEF.name(), Role.CUSTOMER.name())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

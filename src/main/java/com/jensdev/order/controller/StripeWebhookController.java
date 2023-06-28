@@ -1,7 +1,7 @@
 package com.jensdev.order.controller;
 
 //import com.google.gson.JsonSyntaxException;
-import com.jensdev.notification.dto.OrderNotificationDto;
+import com.jensdev.notification.dto.OrderMessageDto;
 import com.jensdev.notification.service.NotificationService;
 import com.jensdev.order.service.OrderService;
 import com.stripe.exception.SignatureVerificationException;
@@ -85,7 +85,7 @@ public class StripeWebhookController {
             log.info("Payment intent: " + paymentIntent);
             Order order = orderService.handleSuccessfulPayment(paymentIntent, sessionId);
             log.info("Order {} has been paid for", order.getId());
-            NotificationService.notifyAllChefs(OrderNotificationDto.fromDomain(order));
+            NotificationService.notifyAllChefs(OrderMessageDto.fromDomain(order));
 //            String id = lineItems.getData().get(0).getId();
 //            System.out.println("Fulfilling order for " + lineItems.getData().get(0).getDescription());
         }

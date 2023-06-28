@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderNotificationDto implements BaseNotificationDto {
+public class OrderMessageDto implements BaseMessageDto {
 
     Long orderId;
     OrderStatus orderStatus;
@@ -21,8 +21,8 @@ public class OrderNotificationDto implements BaseNotificationDto {
         return NotificationType.ORDER;
     }
 
-    public static OrderNotificationDto fromDomain(Order order) {
-        return OrderNotificationDto.builder()
+    public static OrderMessageDto fromDomain(Order order) {
+        return OrderMessageDto.builder()
                 .orderId(order.getId())
                 .orderStatus(order.getStatus())
                 .build();

@@ -1,8 +1,8 @@
-package com.jensdev.common;
+package com.jensdev.common.responseEnvelop;
 
+import com.jensdev.common.responseEnvelop.ResponseEnvelop;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
