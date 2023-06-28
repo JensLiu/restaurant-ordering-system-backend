@@ -61,12 +61,16 @@ public class NotificationEndpoint {
     @OnMessage
     public void onMessage(String text) {
         // TODO: support for chat message and refactor
-        OrderNotificationDto notification = (OrderNotificationDto) BaseNotificationDto.fromJson(text);
-        log.info("recieved message " + notification);
-        Order order = orderService.updateOrderStatus(notification.getOrderId(), notification.getOrderStatus());
-        log.info("to notify: " + order.getUser());
-        var dto = OrderNotificationDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
-        NotificationService.notifyUser(order.getUser(), dto);
+        try {
+            OrderNotificationDto notification = (OrderNotificationDto) BaseNotificationDto.fromJson(text);
+            log.info("recieved message " + notification);
+            Order order = orderService.updateOrderStatus(notification.getOrderId(), notification.getOrderStatus());
+            log.info("to notify: " + order.getUser());
+            var dto = OrderNotificationDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
+            NotificationService.notifyUser(order.getUser(), dto);
+        } catch (Exception e) {
+            log.error("Error parsing message: " + e.getMessage());
+        }
 
     }
 
