@@ -1,6 +1,6 @@
-package com.jensdev.common;
+package com.jensdev.common.authException;
 
-import com.jensdev.common.exceptions.AuthException;
+import com.jensdev.common.infrastructureException.ExceptionResponseEntity;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

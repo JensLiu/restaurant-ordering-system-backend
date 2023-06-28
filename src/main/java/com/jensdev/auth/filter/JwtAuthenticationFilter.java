@@ -1,7 +1,6 @@
 package com.jensdev.auth.filter;
 
 import com.jensdev.auth.service.JwtService;
-import com.jensdev.common.exceptions.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

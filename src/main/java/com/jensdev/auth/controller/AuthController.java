@@ -3,7 +3,7 @@ package com.jensdev.auth.controller;
 import com.jensdev.auth.model.*;
 import com.jensdev.auth.service.AuthService;
 import com.jensdev.auth.service.JwtService;
-import com.jensdev.common.exceptions.AuthException;
+import com.jensdev.common.authException.AuthException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -65,16 +65,5 @@ public class AuthController {
             throw new AuthException("Refresh token expired");
         }
     }
-
-//    @PostMapping("/refresh")
-//     public ResponseEntity<RefreshResponse> refreshToken(@RequestBody RefreshRequest request) {
-//        RefreshResponse response = authService.refreshToken(request.getRefreshToken());
-//            log.debug("Token refreshed");
-//            return ResponseEntity.ok()
-//                    .header(HttpHeaders.SET_COOKIE, jwtService.getAccessTokenCookie(response.getAccessToken()).toString())
-//                    .header(HttpHeaders.SET_COOKIE, jwtService.getRefreshTokenCookie(response.getRefreshToken()).toString())
-//                    .body(response);
-//    }
-
 
 }

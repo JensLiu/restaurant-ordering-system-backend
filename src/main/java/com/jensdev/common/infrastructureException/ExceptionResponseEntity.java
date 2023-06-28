@@ -1,4 +1,4 @@
-package com.jensdev.common;
+package com.jensdev.common.infrastructureException;
 
 import java.util.Date;
 

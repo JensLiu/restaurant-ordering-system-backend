@@ -1,9 +1,9 @@
-package com.jensdev.common.exceptions;
+package com.jensdev.common.authException;
 
-public class BusinessException extends RuntimeException {
+public class AuthException extends RuntimeException {
     private final String message;
 
-    public BusinessException(String message) {
+    public AuthException(String message) {
         this.message = message;
     }
 

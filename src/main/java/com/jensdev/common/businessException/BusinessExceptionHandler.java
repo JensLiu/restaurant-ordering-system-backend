@@ -1,6 +1,7 @@
-package com.jensdev.common;
+package com.jensdev.common.businessException;
 
-import com.jensdev.common.exceptions.BusinessException;
+import com.jensdev.common.infrastructureException.ExceptionResponseEntity;
+import com.jensdev.common.exceptionHandlers.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

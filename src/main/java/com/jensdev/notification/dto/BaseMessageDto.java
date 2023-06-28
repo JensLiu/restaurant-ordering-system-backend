@@ -7,14 +7,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = OrderNotificationDto.class, name = "ORDER"),
-        @JsonSubTypes.Type(value = MessageNotificationDto.class, name = "MESSAGE")
+        @JsonSubTypes.Type(value = OrderMessageDto.class, name = "ORDER"),
+        @JsonSubTypes.Type(value = MessageMessageDto.class, name = "MESSAGE"),
+        @JsonSubTypes.Type(value = HeartbeatMessage.class, name = "HEARTBEAT")
 })
-public interface BaseNotificationDto {
+public interface BaseMessageDto {
     NotificationType getType();
-    static BaseNotificationDto fromJson(String json) {
+    static BaseMessageDto fromJson(String json) {
         try {
-            return new ObjectMapper().readValue(json, BaseNotificationDto.class);
+            return new ObjectMapper().readValue(json, BaseMessageDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

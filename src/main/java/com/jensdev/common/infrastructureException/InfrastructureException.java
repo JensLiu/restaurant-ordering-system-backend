@@ -1,4 +1,4 @@
-package com.jensdev.common.exceptions;
+package com.jensdev.common.infrastructureException;
 
 public class InfrastructureException extends RuntimeException {
     private final String message;

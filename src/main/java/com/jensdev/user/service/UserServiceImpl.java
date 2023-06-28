@@ -1,7 +1,7 @@
 package com.jensdev.user.service;
 
-import com.jensdev.common.exceptions.AuthException;
-import com.jensdev.common.exceptions.BusinessException;
+import com.jensdev.common.authException.AuthException;
+import com.jensdev.common.exceptionHandlers.BusinessException;
 import com.jensdev.user.modal.User;
 import com.jensdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
