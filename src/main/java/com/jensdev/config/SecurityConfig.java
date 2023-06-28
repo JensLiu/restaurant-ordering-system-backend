@@ -1,6 +1,6 @@
 package com.jensdev.config;
 
-import com.jensdev.auth.CustomAuthenticationEntryPoint;
+import com.jensdev.auth.filter.CustomAuthenticationEntryPoint;
 import com.jensdev.auth.filter.CorsFilter;
 import com.jensdev.auth.filter.JwtAuthenticationFilter;
 import com.jensdev.user.modal.Role;

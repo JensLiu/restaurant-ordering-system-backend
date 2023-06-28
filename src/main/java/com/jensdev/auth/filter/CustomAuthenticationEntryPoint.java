@@ -1,7 +1,6 @@
-package com.jensdev.auth;
+package com.jensdev.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jensdev.common.ExceptionResponseEntity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
