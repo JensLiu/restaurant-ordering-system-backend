@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +21,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final UserService userService;
+
     @GetMapping("/me/orders")
     public ResponseEntity<List<OrderDto>> getOrdersByUser(Authentication authentication) {
         User user = userService.getUser(authentication);
@@ -30,6 +29,16 @@ public class OrderController {
         log.info("orders for " + user.getEmail() + ": " + orders);
         List<OrderDto> dtos = orders.stream().map(OrderDto::fromDomain).toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @DeleteMapping(value = {
+            "/orders/{orderId}",
+            "/me/orders/{orderId}"
+    })
+    public ResponseEntity<String> deleteOrderById(@PathVariable Long orderId, Authentication authentication) {
+        User user = userService.getUser(authentication);
+        orderService.deleteOrder(orderId, user);
+        return ResponseEntity.ok("success");
     }
 
     @GetMapping("/orders")
