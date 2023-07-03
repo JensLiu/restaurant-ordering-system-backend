@@ -1,5 +1,6 @@
-package com.jensdev.common.businessException;
+package com.jensdev.common.infrastructureException;
 
+import com.jensdev.common.businessException.BusinessException;
 import com.jensdev.common.responseEnvelop.ExceptionResponseEntity;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +12,12 @@ import java.util.Date;
 
 @ControllerAdvice
 @Log4j2
-public class BusinessExceptionHandler extends ResponseEntityExceptionHandler {
+public class InfrastructureExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {BusinessException.class})
-    ResponseEntity<ExceptionResponseEntity> handleBusinessException(BusinessException e) {
+    ResponseEntity<ExceptionResponseEntity> handleInfrastructureException(InfrastructureException e) {
         log.error(e);
-        return ResponseEntity.badRequest().body(
-                new ExceptionResponseEntity(e.getMessage(), new Date())
+        return ResponseEntity.internalServerError().body(
+                new ExceptionResponseEntity("internal server error", new Date())
         );
     }
 }

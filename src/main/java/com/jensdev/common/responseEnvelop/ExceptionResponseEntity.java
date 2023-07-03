@@ -1,4 +1,4 @@
-package com.jensdev.common.infrastructureException;
+package com.jensdev.common.responseEnvelop;
 
 import java.util.Date;
 

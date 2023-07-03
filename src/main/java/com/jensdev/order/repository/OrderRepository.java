@@ -6,13 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findAllByStripeIntentId(String stripeSessionId);
+
     List<Order> findAllByStripeSessionId(String stripeSessionId);
 
-    @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC")
+    @Query("SELECT o FROM Order o JOIN User WHERE o.user.id = :userId ORDER BY o.createdAt DESC")
     List<Order> findAllByUserId(Long userId);
 
     @Query("SELECT o FROM Order o WHERE o.status in :statuses ORDER BY o.paidAt")

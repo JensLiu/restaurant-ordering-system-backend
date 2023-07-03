@@ -10,18 +10,17 @@ import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
 
-    private Long id;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String imageSrc;
-    private String role;
-    private Date registeredAt;
-    private String password;
+    Long id;
+    String firstname;
+    String lastname;
+    String email;
+    String imageSrc;
+    String role;
+    Date registeredAt;
+    String password;
 
     public UserDto(User user) {
         this.id = user.getId();

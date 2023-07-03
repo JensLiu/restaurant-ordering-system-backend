@@ -1,4 +1,4 @@
-package com.jensdev.common.exceptionHandlers;
+package com.jensdev.common.businessException;
 
 public class BusinessException extends RuntimeException {
     private final String message;

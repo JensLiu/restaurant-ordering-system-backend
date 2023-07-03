@@ -1,12 +1,12 @@
 package com.jensdev.user.service;
 
 import com.jensdev.common.authException.AuthException;
-import com.jensdev.common.exceptionHandlers.BusinessException;
+import com.jensdev.common.businessException.BusinessException;
+import com.jensdev.common.infrastructureException.InfrastructureException;
 import com.jensdev.user.modal.User;
 import com.jensdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +41,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (userDetails == null) {
+        if (authentication == null) {
+            throw new InfrastructureException("authentication is null but user is authenticated");
+        }
+        User user = (User) authentication.getPrincipal();
+        if (user == null) {
             throw new AuthException("Unauthorized user");
         }
-        String userEmail = userDetails.getUsername();
-        return findUserByEmail(userEmail);
+        return user;
     }
 }

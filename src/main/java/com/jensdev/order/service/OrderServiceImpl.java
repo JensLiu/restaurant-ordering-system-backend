@@ -1,6 +1,7 @@
 package com.jensdev.order.service;
 
-import com.jensdev.common.exceptionHandlers.BusinessException;
+import com.jensdev.common.authException.AuthException;
+import com.jensdev.common.businessException.BusinessException;
 import com.jensdev.common.infrastructureException.InfrastructureException;
 import com.jensdev.menu.repository.MenuItemFlavourRepository;
 import com.jensdev.menu.repository.MenuItemRepository;
@@ -8,11 +9,11 @@ import com.jensdev.menu.repository.MenuItemSizeRepository;
 import com.jensdev.order.dto.OrderItemRequestDto;
 import com.jensdev.order.repository.OrderItemRepository;
 import com.jensdev.order.repository.OrderRepository;
+import com.jensdev.order.service.OrderService;
+import com.jensdev.user.modal.Role;
 import com.jensdev.user.modal.User;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.jensdev.order.modal.Order;
 import com.jensdev.order.modal.OrderItem;
@@ -128,15 +129,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+    public Order getOrderById(Long id, User actionUser) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        if (actionUser.getRole() == Role.ADMIN || order.getUser().equals(actionUser)) {
+            return order;
+        }
+        throw new BusinessException("You do not have the authority to get this order");
     }
 
     @Override
     public Order updateOrderStatus(Long id, OrderStatus newStatus) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new BusinessException("Cannot update status of non-existing order"));
         order.setStatus(newStatus);
+        if (order.getStatus() == OrderStatus.READY) {
+            order.setServedAt(new Date());
+        }
         return orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrder(Long orderId, User actionUser) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new BusinessException("Order not found"));
+        if (actionUser.getRole() == Role.ADMIN || order.getUser().equals(actionUser)) {
+            if (order.getStatus() == OrderStatus.UNPAID) {
+                orderRepository.deleteById(orderId);
+            } else {
+                throw new BusinessException("Cannot delete a payed order");
+            }
+        }
+        throw new AuthException("You do not have the authority to delete this order");
     }
 
     private OrderItem convertToDomain(OrderItemRequestDto requestDto) {

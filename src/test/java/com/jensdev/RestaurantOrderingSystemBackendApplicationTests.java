@@ -1,6 +1,7 @@
 package com.jensdev;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jensdev.analysis.repository.OrderAnalysisRepository;
+import com.jensdev.analysis.service.OrderAnalysisServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,9 +19,20 @@ class RestaurantOrderingSystemBackendApplicationTests {
     @MockBean
     private ServerEndpointExporter serverEndpointExporter; // Mocking WebSocket bean
 
+    @Autowired
+    OrderAnalysisServiceImpl orderAnalysisService;
+
+    @Autowired
+    OrderAnalysisRepository orderAnalysisRepository;
 
     @Test
-    void contextLoads() throws JsonProcessingException {
+    void contextLoads() {
+//        orderAnalysisRepository.getOrderProcessTime().forEach(System.out::println);
+//        System.out.println("trending categories");
+//        orderAnalysisService.trendingCategories().forEach(System.out::println);
+//        orderAnalysisService.valuableCustomers().forEach(System.out::println);
+//        orderAnalysisService.peakHours().forEach(System.out::println);
+        orderAnalysisRepository.getTrendingMenuItems().forEach(System.out::println);
     }
 
 }

@@ -6,7 +6,9 @@ import com.jensdev.order.modal.Order;
 import com.jensdev.order.dto.OrderRequestDto;
 import com.jensdev.user.modal.User;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface OrderService {
     Session handleCheckoutInitiation(OrderRequestDto requestDto, User user);
@@ -20,8 +22,12 @@ public interface OrderService {
 
     List<Order> getWaitingOrdersForToday();
 
-    Order getOrderById(Long id);
+    Order getOrderById(Long id, User actionUser);
 
     Order updateOrderStatus(Long id, OrderStatus newStatus);
+
+    void deleteOrder(Long orderId, User actionUser);
+
+
 
 }

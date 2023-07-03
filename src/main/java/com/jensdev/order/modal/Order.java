@@ -40,6 +40,6 @@ public class Order {
 
     Double totalPrice;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.ALL)
     List<OrderItem> items;
 }

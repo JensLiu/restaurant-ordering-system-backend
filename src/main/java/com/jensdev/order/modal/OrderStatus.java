@@ -1,5 +1,5 @@
 package com.jensdev.order.modal;
 
 public enum OrderStatus {
-    UNPAID, WAITING, PREPARING, READY, SERVED
+    UNPAID, WAITING, PREPARING, READY
 }
