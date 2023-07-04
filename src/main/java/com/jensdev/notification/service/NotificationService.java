@@ -29,6 +29,27 @@ public class NotificationService {
         }
     }
 
+    public static void deleteBySession(Session session) {
+        // this is not a good way of removing a connection
+        // it should only be used when the exception only contains
+        // the session and not the user
+        UserConnectionContext.chefConnections.forEach((id, status) -> {
+            if (status.getSession().equals(session)) {
+                UserConnectionContext.chefConnections.remove(id);
+            }
+        });
+        UserConnectionContext.customerConnections.forEach((id, status) -> {
+            if (status.getSession().equals(session)) {
+                UserConnectionContext.customerConnections.remove(id);
+            }
+        });
+        UserConnectionContext.managerConnections.forEach((id, status) -> {
+            if (status.getSession().equals(session)) {
+                UserConnectionContext.managerConnections.remove(id);
+            }
+        });
+    }
+
     public static <T extends BaseMessageDto> void notifyAllChefs(T notification) {
         log.info("Sending notification to all chefs: " + notification.toString());
         UserConnectionContext.chefConnections.forEach((id, status) -> {

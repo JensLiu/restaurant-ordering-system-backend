@@ -17,6 +17,8 @@ import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @ServerEndpoint("/ws/notifications/{token}")
 @Component
 @Log4j2
@@ -86,6 +88,20 @@ public class NotificationEndpoint {
             log.info("to notify: " + order.getUser());
             var dto = OrderMessageDto.builder().orderId(order.getId()).orderStatus(order.getStatus()).build();
             NotificationService.notifyUser(order.getUser(), dto);
+        }
+    }
+
+    @OnError
+    public void onError(Session session, Throwable e) {
+        log.error("Error: " + e.getMessage());
+        try {
+            session.close();
+            log.info("Session closed: " + session.getId());
+        } catch (IOException ex) {
+            log.error("Error closing session: " + ex.getMessage());
+        } finally {
+            NotificationService.deleteBySession(session);
+            log.info("Session removed: " + session.getId());
         }
     }
 
