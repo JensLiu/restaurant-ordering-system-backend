@@ -76,14 +76,20 @@ public class MenuItemController {
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping(value = {
-            "/menu",
-            "/public/menu"
-    })
-    ResponseEntity<List<MenuItemDto>> getMenuItems() {
+    @GetMapping("/menu")
+    ResponseEntity<List<MenuItemDto>> getAllMenuItems(Authentication authentication) {
+        User user = userService.getUser(authentication);
+        if (user.getRole() != Role.ADMIN) {
+            throw new RuntimeException("You are not authorized to view this page");
+        }
         List<MenuItem> items = menuService.getMenuItems();
-        List<MenuItemDto> dtos = items.stream().map(MenuItemDto::fromDomain).toList();
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(items.stream().map(MenuItemDto::fromDomain).toList());
+    }
+
+    @GetMapping("/public/menu")
+    ResponseEntity<List<MenuItemDto>> getAvailableMenuItems() {
+        List<MenuItem> items = menuService.getAvailableMenuItems();
+        return ResponseEntity.ok(items.stream().map(MenuItemDto::fromDomain).toList());
     }
 
     @GetMapping(value = {

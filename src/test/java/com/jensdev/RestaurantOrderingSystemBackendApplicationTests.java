@@ -32,7 +32,8 @@ class RestaurantOrderingSystemBackendApplicationTests {
 //        orderAnalysisService.trendingCategories().forEach(System.out::println);
 //        orderAnalysisService.valuableCustomers().forEach(System.out::println);
 //        orderAnalysisService.peakHours().forEach(System.out::println);
-        orderAnalysisRepository.getTrendingMenuItems().forEach(System.out::println);
+//        orderAnalysisRepository.getTrendingMenuItems().forEach(System.out::println);
+        orderAnalysisRepository.getValuableCustomers().forEach(System.out::println);
     }
 
 }

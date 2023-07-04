@@ -43,14 +43,14 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public List<MenuItem> getAvailableMenuItems() {
+        return menuRepository.findAllAvailable();
+    }
+
+    @Override
     public MenuItem updateMenuItem(MenuItem menuItem) {
 
         MenuItem old = menuRepository.findById(menuItem.getId()).orElseThrow(() -> new BusinessException("Cannot update non-existent item"));
-
-        System.out.println("old flavours: " + old.getFlavours());
-        System.out.println("old sizes: " + old.getSizes());
-        System.out.println("new flavours: " + menuItem.getFlavours());
-        System.out.println("new sizes: " + menuItem.getSizes());
 
         Set<MenuItemFlavour> deletingFlavours = new HashSet<>(old.getFlavours());
         Set<MenuItemSize> deletingSizes = new HashSet<>(old.getSizes());
