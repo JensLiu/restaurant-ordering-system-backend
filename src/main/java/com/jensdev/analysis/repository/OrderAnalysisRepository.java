@@ -46,7 +46,7 @@ public interface OrderAnalysisRepository extends JpaRepository<Order, Long> {
             SELECT new map(u.id as id, u.firstname as firstname, u.lastname as lastname, u.imageSrc as imageSrc,
                         u.registeredAt as registeredAt, SUM(o.totalPrice) as totalSpend)
             FROM User u
-            LEFT JOIN Order o ON o.user = u AND o.paidAt IS NOT NULL
+            JOIN Order o ON o.user = u AND o.paidAt IS NOT NULL
             GROUP BY u
             HAVING u.role = com.jensdev.user.modal.Role.CUSTOMER
             ORDER BY SUM(o.totalPrice) DESC
