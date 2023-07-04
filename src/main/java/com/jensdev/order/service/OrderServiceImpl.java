@@ -156,8 +156,9 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 throw new BusinessException("Cannot delete a payed order");
             }
+        } else {
+            throw new AuthException("You do not have the authority to delete this order");
         }
-        throw new AuthException("You do not have the authority to delete this order");
     }
 
     private OrderItem convertToDomain(OrderItemRequestDto requestDto) {

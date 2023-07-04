@@ -13,7 +13,7 @@ import java.util.Date;
 @ControllerAdvice
 @Log4j2
 public class InfrastructureExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {BusinessException.class})
+    @ExceptionHandler(value = {InfrastructureException.class})
     ResponseEntity<ExceptionResponseEntity> handleInfrastructureException(InfrastructureException e) {
         log.error(e);
         return ResponseEntity.internalServerError().body(
