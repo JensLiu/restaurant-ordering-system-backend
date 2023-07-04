@@ -48,7 +48,7 @@ public interface OrderAnalysisRepository extends JpaRepository<Order, Long> {
             FROM User u
             JOIN Order o ON o.user = u AND o.paidAt IS NOT NULL
             GROUP BY u
-            HAVING u.role = com.jensdev.user.modal.Role.CUSTOMER
+            HAVING u.role = com.jensdev.user.modal.Role.CUSTOMER AND SUM(o.totalPrice) > 0
             ORDER BY SUM(o.totalPrice) DESC
             """)
     List<Map<String, Object>> getValuableCustomers();
