@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Log4j2
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 public class MenuServiceImpl implements MenuService {
     private final MenuItemRepository menuRepository;
     public final MenuCategoryRepository menuCategoryRepository;
@@ -69,13 +72,6 @@ public class MenuServiceImpl implements MenuService {
         } catch (DataIntegrityViolationException e) {
             log.info("Some flavour/size might not be removed from database because it already has a reference to it");
             log.info("rolling back changes");
-            deletingFlavours.addAll(item.getFlavours());
-            deletingSizes.addAll(item.getSizes());
-            item.setFlavours(deletingFlavours.stream().toList());
-            item.setSizes(deletingSizes.stream().toList());
-            System.out.println(item.getFlavours());
-            System.out.println(item.getSizes());
-            menuRepository.save(item);
             throw new BusinessException("Cannot delete flavour/size because it is used in other places");
         }
         return item;
