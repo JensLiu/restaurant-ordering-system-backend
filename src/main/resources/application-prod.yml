@@ -2,8 +2,8 @@ spring:
   datasource:
     username: ${PROD_DB_USER}
     password: ${PROD_DB_PASSWORD}
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:${PROD_DB_URL}
+    driver-class-name: ${PROD_DB_DRIVER_NAME}
   jpa:
     properties:
       hibernate:
@@ -14,6 +14,7 @@ spring:
             non_contextual_creation: true # for postgresql
     hibernate:
       ddl-auto: update
+    database-platform: ${PROD_DB_DIALECT_CLASS}
 
 app:
   jwt:
