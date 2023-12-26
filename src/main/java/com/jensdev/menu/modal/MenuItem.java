@@ -21,10 +21,10 @@ public class MenuItem {
     Boolean isSoldOut;
     Boolean isDeleted;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     List<MenuItemFlavour> flavours;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     List<MenuItemSize> sizes;
 
     @ManyToMany
