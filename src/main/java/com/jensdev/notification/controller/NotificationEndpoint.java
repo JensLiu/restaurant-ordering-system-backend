@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.jensdev.notification.controller.NotificationWsError.*;
+
 @ServerEndpoint("/ws/notifications/{token}")
 @Component
 @Log4j2
@@ -50,7 +52,7 @@ public class NotificationEndpoint {
         if (user == null) {
             log.info("authentication failed");
             try {
-                session.close();
+                session.close(new CloseReason(CloseReason.CloseCodes.getCloseCode(TOKEN_EXPIRED_CODE), TOKEN_EXPIRED_ERR_STRING));
             } catch (Exception e) {
                 log.error("Error closing session: " + e.getMessage());
             }
