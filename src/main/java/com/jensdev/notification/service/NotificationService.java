@@ -5,6 +5,7 @@ import com.jensdev.user.modal.User;
 import jakarta.websocket.Session;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.JstlUtils;
 
 import java.util.List;
 
@@ -84,15 +85,18 @@ public class NotificationService {
 
     public static <T extends BaseMessageDto> void notifyUser(User user, T notification) {
         log.info("notifying user " + user.getEmail() + ", " + notification.toString());
-        Session session = null;
+        SessionStatus status = null;
         switch (user.getRole()) {
-            case CUSTOMER -> session = UserConnectionContext.customerConnections.get(user.getId()).getSession();
-            case CHEF -> session = UserConnectionContext.chefConnections.get(user.getId()).getSession();
-            case ADMIN -> session = UserConnectionContext.managerConnections.get(user.getId()).getSession();
+            case CUSTOMER -> status = UserConnectionContext.customerConnections.get(user.getId());
+            case CHEF -> status = UserConnectionContext.chefConnections.get(user.getId());
+            case ADMIN -> status = UserConnectionContext.managerConnections.get(user.getId());
         }
-        if (session != null && session.isOpen()) {
-            log.info("message to " + user.getEmail() + ": " + notification.toJson());
-            session.getAsyncRemote().sendText(notification.toJson());
+        if (status != null) {
+            var session = status.getSession();
+            if (session.isOpen()) {
+                log.info("message to " + user.getEmail() + ": " + notification.toJson());
+                session.getAsyncRemote().sendText(notification.toJson());
+            }
         }
     }
 
