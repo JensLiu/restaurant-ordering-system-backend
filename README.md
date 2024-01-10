@@ -19,9 +19,9 @@ TL; DR: Card No. 4242 4242 4242 4242
 
 👤 Accounts
 
-- customer@jensdevelops.de
-- chef@jensdevelops.de
-- manager@jensdevelops.de
+- `customer@jensdevelops.de`
+- `chef@jensdevelops.de`
+- `manager@jensdevelops.de`
 
 Password: `password`
 
@@ -130,7 +130,7 @@ All responses are packed into the following format
 
 ```json
 {
-	"data": { data },
+	"data": { "field": "value" },
 	"message": "success/failed"
 }
 ```
@@ -150,36 +150,6 @@ Configure the following environment variables or rewrite the `application-prod.y
 
 ```yaml
 spring:
-  datasource:
-    username: ${PROD_DB_USER}
-    password: ${PROD_DB_PASSWORD}
-    url: jdbc:${PROD_DB_URL}
-    driver-class-name: ${PROD_DB_DRIVER_NAME}
-  jpa:
-    properties:
-      hibernate:
-        use_sql_comments: true
-        format_sql: true
-        jdbc:
-          lob:
-            non_contextual_creation: true # for postgresql
-    hibernate:
-      ddl-auto: update
-    database-platform: ${PROD_DB_DIALECT_CLASS}
-
-app:
-  jwt:
-    secret: ${PROD_JWT_SECRET}
-    access-token:
-      cookie-name: ${PROD_JWT_ACCESS_TOKEN_COOKIE_NAME}
-      expiration-ms: ${PROD_JWT_ACCESS_TOKEN_EXPIRATION_MS}
-    refresh-token:
-        cookie-name: ${PROD_JWT_REFRESH_TOKEN_COOKIE_NAME}
-        expiration-ms: ${PROD_JWT_REFRESH_TOKEN_EXPIRATION_MS}
-  stripe:
-    api: ${PROD_STRIPE_API}
-    webhook:
-        secret: ${PROD_STRIPE_WEBHOOK_SECRET}spring:
   datasource:
     username: ${PROD_DB_USER}
     password: ${PROD_DB_PASSWORD}
