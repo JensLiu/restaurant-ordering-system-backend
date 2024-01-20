@@ -1,6 +1,6 @@
 # Restaurant Ordering System Backend
 
-💡 **Overview**
+# **Overview**
 
 **front-end repo**
 [https://github.com/JensLiu/restaurant-ordering-system-frontend](https://github.com/JensLiu/restaurant-ordering-system-frontend)
@@ -15,18 +15,17 @@
 TL;DR: Card No. 4242 4242 4242 4242 [Document: Test payment methods](https://stripe.com/docs/testing)
 
 👤 Accounts
-
 - `customer@jensdevelops.de`
 - `chef@jensdevelops.de`
 - `manager@jensdevelops.de`
 
 Password: `password`
 
-**Use case**
+## Use case
 
 ![use case](./doc/assets/use_case.svg)
 
-**CD/CI: Railway Architecture**
+## Deployment: Railway Architecture
 
 ![railway](./doc/assets/railway.png)
 
@@ -44,28 +43,24 @@ Password: `password`
 
 ## **Authentication**
 
-*Authenticate user on every API request*
+*Authenticate user on each API request*
 
 Upon each request, a JWT access token must be attached either as an HTTP-only cookie or an Authentication header. Only
 users with the correct identity can access the endpoints within its role.
 
 When signed in, the user will be given an access token and a refresh token. When the access token expires, the user can
-use the refresh token to refresh it since the refresh token lasts longer. It is implemented in the front end to
-automatically refresh when receiving responses with the unauthorised status code.
+use the refresh token to refresh it since the refresh token lasts longer. *(It is implemented in the front end to
+automatically refresh when receiving responses with the unauthorised status code)*.
 
 ## Profile management
-
 Each user can modify their name, avatar, and password.
 
 ## **Menu item management**
-
 Managers can
-
 - Add/Edit/Remove categories
 - Add/Edit/Remove menu items
 
 Each menu item has the following attributes:
-
 - id
 - name
 - description
@@ -83,34 +78,35 @@ Its flavour or <size, price> pair can only be deleted when no related order has 
 altered. (You can delete and add a new pair to achieve this)
 
 ## **Stripe payment integration**
-
 - Upon checkout, the backend will calculate the total price, then call the stripe API to make a payment intent and send
   the redirect URL as a response. The front end will be able to redirect to the stripe payment page.
-- Upon successful payment, it will automatically update the payment status and call the notification service to notify
+- Upon successful payment *(webhook callback from Stripe)*, it will automatically update the payment status and call the notification service to notify
   chefs of an incoming order.
 
 ## **Order Analysis**
 
 ### Peak hour analysis
-
-It calculates hourly transactional volume for each hour.
+Helps managers to decide when more staff are needed
+![Peak Hour](./doc/assets/peak_hours.png)
 
 ### Trending category analysis
-
-It calculates the best-selling categories
+Helps managers to know the sales of each category
+![Trending Categories](./doc/assets/trending_categories.png)
 
 ### Trending item analysis
-
-It calculates the best-selling items
+Helps managers to decide which items and their ingredients to prepare more
+![Trending Items](./doc/assets/trending_items.png)
 
 ### Valuable customer analysis
-
-It ranks customers by the total amount spent in the store
+Helps managers to find out loyal and valuable customers, and give them discounts etc.
+![Valuable Customers](./doc/assets/valueable_customers.png)
 
 ## Realtime notification
-
 It uses Web Socket to notify users connected to the server. Chefs are notified when an order is placed. Customers are
 notified when an order is being prepared or finished.
+
+In the current implementation, each user can only log in **once** at a time. Multiple logins will result in previous 
+websocket connections being killed.
 
 # Global Error Handling and Response Enveloping
 
@@ -136,13 +132,10 @@ All responses are packed into the following format
 ```
 
 # Database design
-
 ![database](./doc/assets/database.png)
-
 ⚠️ Note: conversation/chat feature is not implemented
 
 # Deployment
-
 Configure the following environment variables or rewrite the `application-prod.yaml`
 
 ```yaml
@@ -180,7 +173,6 @@ app:
 ```
 
 # References
-
 - Stripe integration
     - [Documentation](https://stripe.com/docs)
     - [Fulfill orders with Checkout](https://stripe.com/docs/payments/checkout/fulfill-orders)
